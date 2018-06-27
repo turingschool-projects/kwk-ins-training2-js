@@ -126,4 +126,61 @@ const renderInvitees = (hedgehogs) => {
 }
 ```
 
-Once we save and run this - we should see the hedgehogs from our database rendered to the DOM. 🙌 Great work! 
+Once we save and run this - we should see the hedgehogs from our database rendered to the DOM. 🙌 Great work!
+
+### Invite another Hedgehog
+Right now, if we type info into the form, click the 'Invite' button - nothing happens. As front end developers, it's our job to take information from this form and send it to the database. Then, the database should update our master list of invitees.
+
+First, we need to tell the computer to listen for a `click` of the 'Invite' button. When that click happens, we want to call the `addNewHedgehog` function. Let's write an event listener.
+
+```js
+$('#invite-btn').on('click', addNewHedgehog);
+```
+
+Now, we need to write some code in that function so that it:
+- Captures all of the information the user typed in
+- Sends that information to the database
+
+Inside of our function, we will use the jQuery `$` to access specific IDs - in this case, `name`, `hoglets`, and `allergies`. We must include `.val()` at the end of each statement to access the value that was typed in, not just the HTML element itself.
+
+```js
+const addNewHedgehog = () => {
+  var name = $('#name').val()
+  var numHoglets = $('#hoglets').val()
+  var allergies = $('#allergies').val()
+};
+```
+Cool, we have the user input. We aren't sending it anywhere yet... Let's break that out into a separate function so we can stay organized.
+
+```js
+const addNewHedgehog = () => {
+  var name = $('#name').val()
+  var hoglets = $('#hoglets').val()
+  var allergies = $('#allergies').val()
+  postHedgehogs({name, hoglets, allergies})
+};
+
+const postHedgehogs = (hedgehogData) => {
+  // code will go here
+}
+```
+
+The `fetch` function defaults to 'getting' data - but this time we want to 'post' data. This means we will have to pass it some configuration settings. Don't worry about the details of this for now, just copy and paste this piece. If you would like to research it more, feel free to do so later, and follow up in the channel if questions come up!
+
+```js
+const postHedgehogs = (hedgehogData) => {
+  fetch(`https://hedgehog-party.herokuapp.com/api/v1/invites`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(hedgehogData)
+  })
+  .then(response => response.json())
+  .then(getHedgehogs)
+}
+```
+
+We should now see our new hedgehog appear - both at 'https://hedgehog-party.herokuapp.com/api/v1/invites' and in our browser! We completed 2 of our 3 tasks, keep it up!
+
+
+
+### Uninviting a Hedgehog 🔥
