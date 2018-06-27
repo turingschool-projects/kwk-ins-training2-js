@@ -184,3 +184,60 @@ We should now see our new hedgehog appear - both at 'https://hedgehog-party.hero
 
 
 ### Uninviting a Hedgehog 🔥
+The last piece of this app is making sure our party planner has the ability to un-invite a hedgehog/hedgehog family. We are given two pieces of code to start us off; let's make sure we understand what it's doing for us:
+
+```js
+const unInviteHedgehog = () => {
+
+};
+
+$('#invited-hedgehogs-info').on('click', '.uninvite-btn', unInviteHedgehog);
+```
+
+Above, we have a function called `unInviteHedgeHog` which currently isn't doing anything. Below, we have an click event listener on the button with a class of `uninvite-btn`. When that button is clicked, the `unInviteHedgeHog` function will be called.
+
+Let's write some code in our function so that something actually happens when the uninvite button is clicked! We need to do two things here:
+- Remove the row of the table from the DOM, so the user cannot see it
+- Remove this hedgehogs data from the database
+
+Let's start with the DOM:
+
+```js
+const unInviteHedgehog = (event) => {
+  event.target.parentNode.remove()
+};
+```
+
+We took note of where the event happened (button), traversed up to the parent (the entire row), and used a built-in JavaScript function that removes the HTML element it is called on.
+
+Now, let's call a function that will delete this hedgehog from the database. We are passing this `deleteHedgehog` function the hedgehog ID which the database created for us, so needs to know the ID if it wants to change or delete it.
+
+```js
+const unInviteHedgehog = (event) => {
+  event.target.parentNode.remove()
+  deleteHedgehog(event.target.id);
+};
+
+const deleteHedgehog = (hedgieId) => {
+
+}
+```
+Lastly, we need to make the delete request. We will use the `fetch` tool, but slightly differently than before:
+
+- pass the ID into the URL, using string interpolation
+- tell the computer we want to delete this
+
+```js
+const unInviteHedgehog = (event) => {
+  event.target.parentNode.remove()
+  deleteHedgehog(event.target.id);
+};
+
+const deleteHedgehog = (hedgieId) => {
+  fetch(`https://hedgehog-party.herokuapp.com/api/v1/invites/${hedgieId}`, {
+    method: 'DELETE'
+  })
+}
+```
+
+Our delete functionality should be working 🎉
